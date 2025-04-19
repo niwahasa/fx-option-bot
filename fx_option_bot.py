@@ -40,4 +40,4 @@ def send_expiry_to_telegram():
     message = f"*FX Option Expiries — {now}*\n\n`{data}`"
     bot.send_message(chat_id=CHANNEL_ID, text=message, parse_mode=telegram.ParseMode.MARKDOWN)
 
-send_expiry_to_telegram(
+send_expiry_to_telegram()
