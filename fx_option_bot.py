@@ -4,7 +4,7 @@ import telegram
 from datetime import datetime
 
 # Your Telegram bot credentials
-BOT_TOKEN = "YOUR_BOT_TOKEN_HERE"
+BOT_TOKEN = "7570116431:AAHOQ16QJWB1ZpwuisCYoJp9YjInHCDy2RA"
 CHANNEL_ID = "@serialtradersfx"
 
 bot = telegram.Bot(token=BOT_TOKEN)
