@@ -4,7 +4,7 @@ from telegram import Bot
 import os
 
 # Telegram Setup
-BOT_TOKEN = "7570116431:AAH0Q160JWB1ZpwuisCYoJp9Yj1nHCDy2R4"
+BOT_TOKEN = "7570116431:AAHOQ16QJWB1ZpwuisCYoJp9YjInHCDy2RA"
 CHANNEL_ID = "@serialtradersfx"
 bot = Bot(token=BOT_TOKEN)
 
