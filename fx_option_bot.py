@@ -49,5 +49,5 @@ def main():
     else:
         print("No latest article found.")
 
-if _name_ == "_main_":
+if __name__ == "__main__":
     main()
