@@ -9,7 +9,7 @@ CHANNEL_ID = "@serialtradersfx"
 bot = Bot(token=BOT_TOKEN)
 
 def get_latest_article_url():
-    url = "https://www.forexlive.com/Orders/"
+    url = "https://www.forexlive.com/Orders"
     response = requests.get(url)
     soup = BeautifulSoup(response.text, "html.parser")
     article = soup.find("article")
