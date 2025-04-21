@@ -48,10 +48,6 @@ def main():
             print("No image found in the article.")
     else:
         print("No latest article found.")
-    else:
-    print("Found article URL:",article_url)
-else:
-    print("Downloaded image path:",image_path)
-          
+   
           if __name__ == "__main__":
     main()
