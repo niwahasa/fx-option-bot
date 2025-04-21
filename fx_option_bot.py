@@ -1,3 +1,6 @@
+import time  # <-- this line
+import telebot
+from apscheduler.schedulers.background import BackgroundScheduler
 import os
 import logging
 import requests
