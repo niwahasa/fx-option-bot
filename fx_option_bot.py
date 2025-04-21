@@ -1,43 +1,53 @@
-﻿import requests
+import requests
 from bs4 import BeautifulSoup
-import telegram
-from datetime import datetime
+from telegram import Bot
+import os
 
-# Your Telegram bot credentials
-BOT_TOKEN = "7570116431:AAHOQ16QJWB1ZpwuisCYoJp9YjInHCDy2RA"
+# Telegram Setup
+BOT_TOKEN = "7570116431:AAH0Q160JWB1ZpwuisCYoJp9Yj1nHCDy2R4"
 CHANNEL_ID = "@serialtradersfx"
+bot = Bot(token=BOT_TOKEN)
 
-bot = telegram.Bot(token=BOT_TOKEN)
-
-def get_fx_expiry_data():
-    url = "https://www.forexlive.com/technical-analysis/"
+def get_latest_article_url():
+    url = "https://www.forexlive.com/Orders"
     response = requests.get(url)
     soup = BeautifulSoup(response.text, "html.parser")
+    article = soup.find("article")
+    if article:
+        link = article.find("a")["href"]
+        return link
+    return None
 
-    articles = soup.find_all("article")
-    expiry_data = ""
+def download_expiry_chart(article_url):
+    response = requests.get(article_url)
+    soup = BeautifulSoup(response.text, "html.parser")
 
-    for article in articles:
-        title = article.find("h2")
-        if title and "option expiry" in title.get_text().lower():
-            link = article.find("a")["href"]
-            article_page = requests.get(link)
-            article_soup = BeautifulSoup(article_page.text, "html.parser")
-            content = article_soup.find("div", class_="single-post-content")
+    # Look for the first image inside the article (usually the expiry chart)
+    image = soup.find("img", {"src": lambda x: x and "forexlive" in x})
+    if image:
+        image_url = image["src"]
+        img_data = requests.get(image_url).content
+        image_path = "fx_expiry_chart.png"
+        with open(image_path, "wb") as f:
+            f.write(img_data)
+        return image_path
+    return None
 
-            if content:
-                lines = content.get_text(separator="\n").splitlines()
-                for line in lines:
-                    if any(pair in line for pair in ["EUR/USD", "USD/JPY", "GBP/JPY"]):
-                        expiry_data += line.strip() + "\n"
-            break
+def send_to_telegram(image_path):
+    with open(image_path, "rb") as img:
+        bot.send_photo(chat_id=CHANNEL_ID, photo=img, caption="Latest FX Option Expiry Chart")
 
-    return expiry_data or "No expiry data found today."
+def main():
+    article_url = get_latest_article_url()
+    if article_url:
+        image_path = download_expiry_chart(article_url)
+        if image_path:
+            send_to_telegram(image_path)
+            print("Image sent successfully.")
+        else:
+            print("No image found in the article.")
+    else:
+        print("No latest article found.")
 
-def send_expiry_to_telegram():
-    data = get_fx_expiry_data()
-    now = datetime.now().strftime("%Y-%m-%d %H:%M")
-    message = f"*FX Option Expiries — {now}*\n\n`{data}`"
-    bot.send_message(chat_id=CHANNEL_ID, text=message, parse_mode=telegram.ParseMode.MARKDOWN)
-
-send_expiry_to_telegram()
+if _name_ == "_main_":
+    main()
